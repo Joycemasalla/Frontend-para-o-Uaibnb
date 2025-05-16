@@ -3,10 +3,9 @@ import axios from 'axios';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
-// Estilização aprimorada
 const Container = styled.div`
   padding: 2rem;
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
 `;
 
@@ -16,79 +15,60 @@ const Title = styled.h1`
   margin-bottom: 1.5rem;
 `;
 
-const Lista = styled.ul`
-  list-style: none;
-  padding: 0;
-  margin-top: 2rem;
-`;
-
-const Item = styled.li`
-  background: #fff;
-  border-radius: 12px;
-  padding: 1.25rem 1.5rem;
-  margin-bottom: 1rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const Nome = styled.span`
-  font-size: 1.1rem;
-  color: #333;
-`;
-
 const ButtonGroup = styled.div`
   display: flex;
-  gap: 0.75rem;
+  gap: 1rem;
+  margin-bottom: 2rem;
 `;
 
-const BotaoNova = styled.button`
+const Button = styled.button`
   padding: 0.6rem 1.4rem;
-  background-color: #0077cc;
+  background-color: ${(props) => props.color || '#0077cc'};
   color: white;
   border: none;
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
-  margin-right: 1rem;
   transition: background-color 0.2s ease;
 
   &:hover {
-    background-color: #005fa3;
+    background-color: ${(props) => props.hover || '#005fa3'};
   }
 `;
 
-const BotaoEditar = styled.button`
-  padding: 0.5rem 1rem;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background-color: #218838;
-  }
+const GridContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
 `;
 
+const Card = styled.div`
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
 
- const VoltarCarc = styled.button`
-   padding: 0.5rem 1rem;
-  background-color: #ee5311;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+const Nome = styled.h2`
+  font-size: 1.2rem;
+  color: #222;
+  margin-bottom: 0.5rem;
+`;
 
-  &:hover {
-    background-color: #b64e09;
-  }
-  `;
+const Descricao = styled.p`
+  font-size: 1rem;
+  color: #666;
+  flex: 1;
+`;
+
+const Actions = styled.div`
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+`;
 
 function Caracteristicas() {
   const [caracteristicas, setCaracteristicas] = useState([]);
@@ -97,11 +77,14 @@ function Caracteristicas() {
   useEffect(() => {
     async function fetchCaracteristicas() {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_AIRTABLE_BASE_URL}/caracteristicas`, {
-          headers: {
-            Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`
+        const response = await axios.get(
+          `${process.env.REACT_APP_AIRTABLE_BASE_URL}/caracteristicas`,
+          {
+            headers: {
+              Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
+            }
           }
-        });
+        );
         setCaracteristicas(response.data.records);
       } catch (error) {
         console.error('Erro ao buscar características:', error);
@@ -116,22 +99,31 @@ function Caracteristicas() {
       <Title>Características</Title>
 
       <ButtonGroup>
-        <BotaoNova onClick={() => navigate('/caracteristicas/nova')}>
+        <Button onClick={() => navigate('/caracteristicas/nova')}>
           Nova Característica
-        </BotaoNova>
-        <VoltarCarc type="button" onClick={() => navigate('/')}>Voltar</VoltarCarc>
+        </Button>
+        <Button color="#ee5311" hover="#b64e09" onClick={() => navigate('/')}>
+          Voltar
+        </Button>
       </ButtonGroup>
 
-      <Lista>
+      <GridContainer>
         {caracteristicas.map((item) => (
-          <Item key={item.id}>
+          <Card key={item.id}>
             <Nome>{item.fields.nome}</Nome>
-            <BotaoEditar onClick={() => navigate(`/caracteristicas/editar/${item.id}`)}>
-              Editar
-            </BotaoEditar>
-          </Item>
+            <Descricao>{item.fields.descricao}</Descricao>
+            <Actions>
+              <Button
+                color="#28a745"
+                hover="#218838"
+                onClick={() => navigate(`/caracteristicas/editar/${item.id}`)}
+              >
+                Editar
+              </Button>
+            </Actions>
+          </Card>
         ))}
-      </Lista>
+      </GridContainer>
     </Container>
   );
 }

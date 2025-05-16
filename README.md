@@ -117,6 +117,4 @@ Trabalho desenvolvido para fins educacionais, como parte da disciplina de **Fron
 
 Este projeto é de uso educacional e não possui fins comerciais.
 
-```
-
 ---

@@ -30,6 +30,19 @@ const Button = styled.button`
   }
 `;
 
+const ButtonV = styled.button`
+  padding: 0.7rem 1.5rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-left: 1rem;
+  &:hover {
+    background-color: #0056b3;
+  }
+`;
+
 function NovaCaracteristica() {
   const [nome, setNome] = useState('');
   const navigate = useNavigate();
@@ -66,6 +79,9 @@ function NovaCaracteristica() {
           required
         />
         <Button type="submit">Salvar</Button>
+        <ButtonV  onClick={() => navigate('/caracteristicas')}>
+          Voltar
+        </ButtonV>
       </form>
     </Container>
   );
