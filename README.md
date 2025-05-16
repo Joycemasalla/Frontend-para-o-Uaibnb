@@ -1,70 +1,122 @@
-# Getting Started with Create React App
+# 🏡 Uaibnb – Atividade Prática de Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Este projeto foi desenvolvido como parte da atividade prática da disciplina de **Desenvolvimento Frontend**, com o objetivo de criar uma interface para o sistema fictício **Uaibnb**, utilizando **React** e integração com a **API do Airtable**.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🎯 Objetivo
 
-### `npm start`
+Criar um formulário funcional para cadastrar novas hospedagens no Uaibnb, integrando-se a um backend baseado no Airtable. O projeto utiliza conceitos fundamentais de React, como componentes, hooks e estilização com styled-components.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🛠️ Tecnologias Utilizadas
 
-### `npm test`
+- **React**
+- **Styled-components**
+- **Axios**
+- **React Router DOM**
+- **Airtable API**
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 🔗 Funcionalidades
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- [x] Formulário para criar nova hospedagem
+- [x] Campos: título, cidade, preço, descrição, imagem e características
+- [x] Consumo de API (GET e POST) via Airtable
+- [x] Estilização moderna e responsiva com Styled-components
+- [x] Validação básica de campos obrigatórios
+- [x] Marcação visual das características selecionadas com checkboxes estilizados
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 📦 Como Rodar o Projeto
 
-### `npm run eject`
+1. **Clone o repositório:**
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```bash
+git clone https://github.com/seu-usuario/uaibnb-frontend.git
+cd uaibnb-frontend
+````
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+2. **Instale as dependências:**
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```bash
+npm install
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+3. **Configure as variáveis de ambiente:**
 
-## Learn More
+Crie um arquivo `.env` na raiz do projeto com as seguintes informações:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```env
+REACT_APP_AIRTABLE_BASE_URL=https://api.airtable.com/v0/sua_base_id
+REACT_APP_AIRTABLE_API_KEY=sua_api_key
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+> ⚠️ Assegure-se de que sua base no Airtable tenha as tabelas `locacoes` e `caracteristicas`.
 
-### Code Splitting
+4. **Rode o projeto:**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```bash
+npm start
+```
 
-### Analyzing the Bundle Size
+A aplicação estará disponível em `http://localhost:3000`.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+---
 
-### Making a Progressive Web App
+## 📁 Estrutura de Pastas (simplificada)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```
+src/
+├── pages/
+│   ├── Add.jsx
+│   ├── Caracteristicas.jsx
+│   ├── Edicao.jsx
+│   ├── EditarCaracteristica.jsx
+│   ├── Home.jsx
+│   ├── NovaCaracteristica.jsx
+│
+├── services/
+│   └── api.js
+│
+├── App.js
+├── index.js
+├── index.css
+└── .env
 
-### Advanced Configuration
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+---
 
-### Deployment
+## 👨‍🎓 Sobre a Atividade
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Trabalho desenvolvido para fins educacionais, como parte da disciplina de **Frontend** no curso de Análise e Desenvolvimento de Sistemas.
 
-### `npm run build` fails to minify
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 🤝 Agradecimentos
+
+* Ao professor \Fabricio Lugão pela orientação.
+* Ao grupo: Gustavo Monteiro, Júlia Ávila, Maria Eduarda, Sânio Trindade.
+
+---
+
+## 📌 Observações
+
+* Este projeto foi focado em funcionalidades básicas de CRUD (create) usando a API externa.
+* O backend está abstraído através do Airtable.
+* A segurança da API depende do controle das chaves `.env`. Não exponha essas chaves em repositórios públicos.
+
+---
+
+
+## 📃 Licença
+
+Este projeto é de uso educacional e não possui fins comerciais.
+
+```
+
+---
