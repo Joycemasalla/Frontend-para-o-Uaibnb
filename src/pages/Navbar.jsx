@@ -63,7 +63,7 @@ export default function Navbar() {
 
   return (
     <Nav>
-      <Logo>Hospedagens</Logo>
+      <NavLink to="/" ><Logo> Hospedagens</Logo></NavLink>
       <MenuIcon onClick={() => setMenuOpen(!menuOpen)}>
         {menuOpen ? <FiX /> : <FiMenu />}
       </MenuIcon>

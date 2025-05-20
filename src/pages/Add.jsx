@@ -249,12 +249,12 @@ function NovaHospedagem() {
         </FormGroup>
 
         <FormGroup>
-          <Label>Imagem (URL) *</Label>
+          <Label>Imagem (URL) </Label>
           <Input
             type="url"
             value={imagem}
             onChange={(e) => setImagem(e.target.value)}
-            required
+            
           />
         </FormGroup>
 
