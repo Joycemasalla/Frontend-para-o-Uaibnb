@@ -6,7 +6,7 @@ import { Save, ArrowLeft } from 'lucide-react';
 
 const Container = styled.div`
   max-width: 600px;
-  margin: 3rem auto;
+  margin: 5rem auto;
   padding: 2rem;
   background-color: #ffffff;
   border-radius: 16px;

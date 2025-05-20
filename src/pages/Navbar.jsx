@@ -9,9 +9,15 @@ const Nav = styled.nav`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000; /* <- garante que fique acima do conteúdo */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 64px; /* <- espaço para o conteúdo abaixo do navbar */
 `;
+
 
 const Logo = styled.div`
   color: #fff;

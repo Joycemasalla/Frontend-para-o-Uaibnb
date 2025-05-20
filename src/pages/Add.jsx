@@ -11,7 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 const Container = styled.div`
   padding: 3rem 2rem;
   max-width: 700px;
-  margin: 3rem auto;
+  margin: 5rem auto;
   background-color: #f9fbfd;
   border-radius: 20px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
@@ -254,13 +254,15 @@ function NovaHospedagem() {
             type="url"
             value={imagem}
             onChange={(e) => setImagem(e.target.value)}
-            
+            required
+            placeholder="https://exemplo.com/imagem.jpg"
           />
         </FormGroup>
 
         <FormGroup>
           <Label>Características</Label>
           <CaracteristicasWrapper>
+           { console.log('caracteristicas', caracteristicas)}
             {caracteristicas.map((c) => {
               const id = c.fields.locacao_caracteristicas?.[0];
               if (!id) return null;
