@@ -2,12 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { Save, ArrowLeft } from 'lucide-react';
 
-// Estilos
 const Container = styled.div`
   padding: 2rem;
   max-width: 600px;
   margin: auto;
+`;
+
+const Title = styled.h1`
+  margin-bottom: 2rem;
+  text-align: center;
 `;
 
 const FormGroup = styled.div`
@@ -34,21 +41,38 @@ const Textarea = styled.textarea`
   border: 1px solid #ccc;
 `;
 
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-direction: column;
+
+  @media (min-width: 480px) {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+`;
+
 const Button = styled.button`
-  padding: 0.7rem 1.5rem;
-  background-color: #28a745;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.9rem 1.2rem;
+  background-color: ${(props) => props.bg || '#007bff'};
   color: white;
   border: none;
   border-radius: 10px;
+  font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.3s;
 
   &:hover {
-    background-color: #1e7e34;
+    background-color: ${(props) => props.hover || '#0056b3'};
   }
 `;
 
 function EditarHospedagem() {
-  const { id } = useParams(); // Pegamos o ID da URL
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const [titulo, setTitulo] = useState('');
@@ -57,7 +81,6 @@ function EditarHospedagem() {
   const [descricao, setDescricao] = useState('');
   const [imagem, setImagem] = useState('');
 
-  // Buscar dados existentes da hospedagem pelo ID
   useEffect(() => {
     async function fetchHospedagem() {
       try {
@@ -78,14 +101,13 @@ function EditarHospedagem() {
         setImagem(data.imagem || '');
       } catch (error) {
         console.error('Erro ao buscar hospedagem:', error);
-        alert('Erro ao carregar hospedagem');
+        toast.error('Erro ao carregar hospedagem');
       }
     }
 
     fetchHospedagem();
   }, [id]);
 
-  // Salvar alterações
   const handleUpdate = async (e) => {
     e.preventDefault();
 
@@ -111,17 +133,17 @@ function EditarHospedagem() {
         }
       );
 
-      alert('Hospedagem atualizada com sucesso!');
-      navigate('/'); // Redireciona para a Home
+      toast.success('Hospedagem atualizada com sucesso!');
+      setTimeout(() => navigate('/'), 2000);
     } catch (error) {
       console.error('Erro ao atualizar hospedagem:', error);
-      alert('Erro ao atualizar.');
+      toast.error('Erro ao atualizar hospedagem.');
     }
   };
 
   return (
     <Container>
-      <h1>Editar Hospedagem</h1>
+      <Title>Editar Hospedagem</Title>
       <form onSubmit={handleUpdate}>
         <FormGroup>
           <Label>Título</Label>
@@ -148,8 +170,17 @@ function EditarHospedagem() {
           <Input value={imagem} onChange={(e) => setImagem(e.target.value)} />
         </FormGroup>
 
-        <Button type="submit">Salvar Alterações</Button>
+        <ButtonGroup>
+          <Button type="submit" bg="#28a745" hover="#218838">
+            <Save size={18} /> Salvar
+          </Button>
+          <Button type="button" bg="#6c757d" hover="#5a6268" onClick={() => navigate('/')}>
+            <ArrowLeft size={18} /> Voltar
+          </Button>
+        </ButtonGroup>
       </form>
+
+      <ToastContainer position="top-right" autoClose={2000} />
     </Container>
   );
 }
