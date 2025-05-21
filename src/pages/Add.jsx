@@ -22,8 +22,9 @@ const Title = styled.h1`
   text-align: center;
   margin-bottom: 2.5rem;
   font-size: 2.4rem;
-  font-weight: 700;
-  color: #1f2937;
+  font-weight: 600;
+  color: #2c3e50;
+  
 `;
 
 const FormGroup = styled.div`

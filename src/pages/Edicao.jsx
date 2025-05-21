@@ -1,20 +1,32 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
+import { useParams, useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Save, ArrowLeft } from 'lucide-react';
 
+/* ---------- styled‑components ---------- */
+
 const Container = styled.div`
-  padding: 2rem;
   max-width: 600px;
-  margin: auto;
+  margin: 5rem auto;
+  padding: 2rem 1rem;
+  background-color: #f8f9fa;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 `;
 
 const Title = styled.h1`
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
   text-align: center;
+  font-size: 2.4rem;
+  font-weight: 600;
+  color: #2c3e50;
+
+  @media (max-width: 480px) {
+    font-size: 1.9rem;
+  }
 `;
 
 const FormGroup = styled.div`
@@ -22,34 +34,51 @@ const FormGroup = styled.div`
 `;
 
 const Label = styled.label`
-  font-weight: bold;
+  font-weight: 600;
   display: block;
   margin-bottom: 0.5rem;
 `;
 
 const Input = styled.input`
   width: 100%;
-  padding: 0.6rem;
-  border-radius: 8px;
+  padding: 0.75rem;
+  border-radius: 10px;
   border: 1px solid #ccc;
+  font-size: 1rem;
+
+  &:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.15);
+  }
 `;
 
 const Textarea = styled.textarea`
   width: 100%;
-  padding: 0.6rem;
-  border-radius: 8px;
+  padding: 0.75rem;
+  border-radius: 10px;
   border: 1px solid #ccc;
+  font-size: 1rem;
+  resize: vertical;
+  min-height: 120px;
+
+  &:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.15);
+  }
 `;
 
 const ButtonGroup = styled.div`
   display: flex;
   gap: 1rem;
-  margin-top: 1rem;
-  flex-direction: column;
+  justify-content: center;
+  margin-top: 2rem;
+  flex-wrap: wrap;
 
-  @media (min-width: 480px) {
-    flex-direction: row;
-    justify-content: flex-end;
+  @media (max-width: 500px) {
+    flex-direction: column;
+    align-items: center;
   }
 `;
 
@@ -57,74 +86,73 @@ const Button = styled.button`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.9rem 1.2rem;
-  background-color: ${(props) => props.bg || '#007bff'};
-  color: white;
+  padding: 0.9rem 1.5rem;
+  background-color: ${(p) => p.bg || '#007bff'};
+  color: #fff;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.3s;
 
   &:hover {
-    background-color: ${(props) => props.hover || '#0056b3'};
+    background-color: ${(p) => p.hover || '#0056b3'};
+  }
+
+  @media (max-width: 500px) {
+    width: 100%;
+    justify-content: center;
   }
 `;
+
+/* ---------- Componente ---------- */
 
 function EditarHospedagem() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [titulo, setTitulo] = useState('');
-  const [cidade, setCidade] = useState('');
-  const [preco, setPreco] = useState('');
+  const [titulo, setTitulo]       = useState('');
+  const [cidade, setCidade]       = useState('');
+  const [preco, setPreco]         = useState('');
   const [descricao, setDescricao] = useState('');
-  const [imagem, setImagem] = useState('');
+  const [imagem, setImagem]       = useState('');
 
+  /* Carrega dados */
   useEffect(() => {
-    async function fetchHospedagem() {
+    (async () => {
       try {
-        const response = await axios.get(
+        const { data } = await axios.get(
           `${process.env.REACT_APP_AIRTABLE_BASE_URL}/locacoes/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
-            },
-          }
+          { headers: { Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}` } }
         );
-
-        const data = response.data.fields;
-        setTitulo(data.titulo);
-        setCidade(data.cidade);
-        setPreco(data.preco);
-        setDescricao(data.descricao);
-        setImagem(data.imagem || '');
-      } catch (error) {
-        console.error('Erro ao buscar hospedagem:', error);
+        setTitulo(data.fields.titulo);
+        setCidade(data.fields.cidade);
+        setPreco(data.fields.preco);
+        setDescricao(data.fields.descricao);
+        setImagem(data.fields.imagem || '');
+      } catch (err) {
+        console.error('Erro ao buscar hospedagem:', err);
         toast.error('Erro ao carregar hospedagem');
       }
-    }
-
-    fetchHospedagem();
+    })();
   }, [id]);
 
-  const handleUpdate = async (e) => {
+  /* Atualiza dados */
+  async function handleUpdate(e) {
     e.preventDefault();
-
-    const dadosAtualizados = {
-      fields: {
-        titulo,
-        cidade,
-        preco: Number(preco),
-        descricao,
-        imagem,
-      },
-    };
-
     try {
       await axios.patch(
         `${process.env.REACT_APP_AIRTABLE_BASE_URL}/locacoes/${id}`,
-        dadosAtualizados,
+        {
+          fields: {
+            titulo,
+            cidade,
+            preco: Number(preco),
+            descricao,
+            imagem,
+          },
+        },
         {
           headers: {
             Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
@@ -132,14 +160,13 @@ function EditarHospedagem() {
           },
         }
       );
-
       toast.success('Hospedagem atualizada com sucesso!');
-      setTimeout(() => navigate('/'), 2000);
-    } catch (error) {
-      console.error('Erro ao atualizar hospedagem:', error);
+      setTimeout(() => navigate('/'), 1500);
+    } catch (err) {
+      console.error('Erro ao atualizar hospedagem:', err);
       toast.error('Erro ao atualizar hospedagem.');
     }
-  };
+  }
 
   return (
     <Container>
@@ -157,12 +184,21 @@ function EditarHospedagem() {
 
         <FormGroup>
           <Label>Preço</Label>
-          <Input type="number" value={preco} onChange={(e) => setPreco(e.target.value)} required />
+          <Input
+            type="number"
+            value={preco}
+            onChange={(e) => setPreco(e.target.value)}
+            required
+          />
         </FormGroup>
 
         <FormGroup>
           <Label>Descrição</Label>
-          <Textarea rows="4" value={descricao} onChange={(e) => setDescricao(e.target.value)} required />
+          <Textarea
+            value={descricao}
+            onChange={(e) => setDescricao(e.target.value)}
+            required
+          />
         </FormGroup>
 
         <FormGroup>
