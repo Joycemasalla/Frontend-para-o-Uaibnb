@@ -6,141 +6,161 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Save, ArrowLeft } from 'lucide-react';
 
-/* ---------- styled‑components ---------- */
+/* ---------- styled-components ---------- */
 
 const Container = styled.div`
-  max-width: 600px;
+  max-width: 700px;
   margin: 5rem auto;
-  padding: 2rem 1rem;
+  padding: 3rem 2rem;
   background-color: #f8f9fa;
-  border-radius: 16px;
+  border-radius: 20px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 `;
 
 const Title = styled.h1`
-  margin-bottom: 2.5rem;
   text-align: center;
+  margin-bottom: 2.5rem;
   font-size: 2.4rem;
   font-weight: 600;
   color: #2c3e50;
-
-  @media (max-width: 480px) {
-    font-size: 1.9rem;
-  }
 `;
 
-const FormGroup = styled.div`
-  margin-bottom: 1.5rem;
-`;
+const FormGroup = styled.div`margin-bottom: 1.8rem;`;
 
 const Label = styled.label`
-  font-weight: 600;
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.6rem;
+  font-weight: 600;
+  color: #374151;
 `;
 
-const Input = styled.input`
+const inputBase = `
   width: 100%;
-  padding: 0.75rem;
-  border-radius: 10px;
-  border: 1px solid #ccc;
+  padding: 0.9rem 1rem;
+  border-radius: 12px;
+  border: 1.5px solid #d1d5db;
   font-size: 1rem;
-
+  transition: border-color 0.25s;
+  background-color: #fff;
   &:focus {
+    border-color: #3b82f6;
     outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.15);
+    box-shadow: 0 0 8px rgba(59,130,246,.4);
   }
 `;
+const Input    = styled.input`${inputBase}`;
+const Textarea = styled.textarea`${inputBase} resize: vertical; min-height: 100px;`;
 
-const Textarea = styled.textarea`
-  width: 100%;
-  padding: 0.75rem;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-  resize: vertical;
-  min-height: 120px;
-
-  &:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.15);
-  }
+/* —— pills de características —— */
+const CaracteristicasWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
 `;
 
+const CaracteristicaOption = styled.label`
+  padding: 0.5rem 1.2rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  background-color: ${({ selected }) => (selected ? '#3b82f6' : '#e5e7eb')};
+  color: ${({ selected }) => (selected ? '#fff' : '#374151')};
+  transition: background-color 0.2s;
+  &:hover {
+    background-color: ${({ selected }) => (selected ? '#2563eb' : '#d1d5db')};
+  }
+`;
+const HiddenCheckbox = styled.input`display:none;`;
+
+/* —— botões —— */
 const ButtonGroup = styled.div`
   display: flex;
   gap: 1rem;
-  justify-content: center;
-  margin-top: 2rem;
-  flex-wrap: wrap;
-
-  @media (max-width: 500px) {
-    flex-direction: column;
-    align-items: center;
+  margin-top: 3rem;
+  flex-direction: column;
+  @media (min-width: 420px) {
+    flex-direction: row;
+    justify-content: flex-end;
   }
 `;
-
 const Button = styled.button`
+  flex: 1;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.9rem 1.5rem;
-  background-color: ${(p) => p.bg || '#007bff'};
-  color: #fff;
+  justify-content: center;
+  gap: .45rem;
+  padding: 1.2rem;
+  font-weight: 700;
+  font-size: 1.05rem;
   border: none;
-  border-radius: 12px;
-  font-size: 1rem;
-  font-weight: 600;
+  border-radius: 14px;
+  color: #fff;
+  background-color: ${({ bg }) => bg || '#007bff'};
   cursor: pointer;
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: ${(p) => p.hover || '#0056b3'};
-  }
-
-  @media (max-width: 500px) {
-    width: 100%;
-    justify-content: center;
-  }
+  transition: background-color .3s;
+  &:hover { background-color: ${({ hover }) => hover || '#0056b3'}; }
 `;
 
-/* ---------- Componente ---------- */
+/* ---------- componente ---------- */
 
 function EditarHospedagem() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [titulo, setTitulo]       = useState('');
-  const [cidade, setCidade]       = useState('');
-  const [preco, setPreco]         = useState('');
+  const [titulo,  setTitulo]  = useState('');
+  const [cidade,  setCidade]  = useState('');
+  const [preco,   setPreco]   = useState('');
   const [descricao, setDescricao] = useState('');
-  const [imagem, setImagem]       = useState('');
+  const [imagem,  setImagem]  = useState('');
 
-  /* Carrega dados */
+  /* características */
+  const [listaCarac, setListaCarac] = useState([]);          // todas
+  const [selecionadas, setSelecionadas] = useState([]);      // ids escolhidos
+
+  /* -------- carregamento inicial -------- */
   useEffect(() => {
     (async () => {
+      const headers = { Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}` };
       try {
-        const { data } = await axios.get(
-          `${process.env.REACT_APP_AIRTABLE_BASE_URL}/locacoes/${id}`,
-          { headers: { Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}` } }
-        );
-        setTitulo(data.fields.titulo);
-        setCidade(data.fields.cidade);
-        setPreco(data.fields.preco);
-        setDescricao(data.fields.descricao);
-        setImagem(data.fields.imagem || '');
+        // paralelo: locação + todas características
+        const [locRes, carRes] = await Promise.all([
+          axios.get(`${process.env.REACT_APP_AIRTABLE_BASE_URL}/locacoes/${id}`, { headers }),
+          axios.get(`${process.env.REACT_APP_AIRTABLE_BASE_URL}/caracteristicas`, { headers })
+        ]);
+
+        const loc = locRes.data.fields;
+        setTitulo(loc.titulo);
+        setCidade(loc.cidade);
+        setPreco(loc.preco.toString());
+        setDescricao(loc.descricao);
+        setImagem(loc.imagem || '');
+        setSelecionadas(loc.locacao_caracteristicas || []);  // pré-seleciona
+
+        setListaCarac(carRes.data.records || []);
       } catch (err) {
-        console.error('Erro ao buscar hospedagem:', err);
-        toast.error('Erro ao carregar hospedagem');
+        console.error(err);
+        toast.error('Erro ao carregar dados.');
       }
     })();
   }, [id]);
 
-  /* Atualiza dados */
+  /* -------- handlers -------- */
+  const toggleCaracteristica = (carID) =>
+    setSelecionadas((prev) =>
+      prev.includes(carID) ? prev.filter((v) => v !== carID) : [...prev, carID]
+    );
+
+  /* -------- envio -------- */
   async function handleUpdate(e) {
     e.preventDefault();
+    const precoNum = Number(preco.replace(/\./g,'').replace(',','.'));
+
+    if (!titulo || !cidade || !descricao || !imagem)   { toast.error('Preencha todos os campos'); return; }
+    if (descricao.length < 10)                         { toast.error('Descrição muito curta');   return; }
+    if (isNaN(precoNum) || precoNum <= 0)              { toast.error('Preço inválido');          return; }
+
     try {
       await axios.patch(
         `${process.env.REACT_APP_AIRTABLE_BASE_URL}/locacoes/${id}`,
@@ -148,9 +168,10 @@ function EditarHospedagem() {
           fields: {
             titulo,
             cidade,
-            preco: Number(preco),
+            preco: precoNum,
             descricao,
             imagem,
+            locacao_caracteristicas: selecionadas,   // aqui está o update!
           },
         },
         {
@@ -160,63 +181,81 @@ function EditarHospedagem() {
           },
         }
       );
-      toast.success('Hospedagem atualizada com sucesso!');
+      toast.success('Hospedagem atualizada!');
       setTimeout(() => navigate('/'), 1500);
     } catch (err) {
-      console.error('Erro ao atualizar hospedagem:', err);
-      toast.error('Erro ao atualizar hospedagem.');
+      console.error(err);
+      toast.error('Falha ao atualizar.');
     }
   }
 
+  /* ---------- render ---------- */
   return (
     <Container>
       <Title>Editar Hospedagem</Title>
-      <form onSubmit={handleUpdate}>
+
+      <form onSubmit={handleUpdate} noValidate>
         <FormGroup>
-          <Label>Título</Label>
-          <Input value={titulo} onChange={(e) => setTitulo(e.target.value)} required />
+          <Label>Título *</Label>
+          <Input value={titulo} onChange={(e)=>setTitulo(e.target.value)} required />
         </FormGroup>
 
         <FormGroup>
-          <Label>Cidade</Label>
-          <Input value={cidade} onChange={(e) => setCidade(e.target.value)} required />
+          <Label>Cidade *</Label>
+          <Input value={cidade} onChange={(e)=>setCidade(e.target.value)} required />
         </FormGroup>
 
         <FormGroup>
-          <Label>Preço</Label>
-          <Input
-            type="number"
-            value={preco}
-            onChange={(e) => setPreco(e.target.value)}
-            required
-          />
+          <Label>Preço (R$) *</Label>
+          <Input value={preco} onChange={(e)=>setPreco(e.target.value)} required />
         </FormGroup>
 
         <FormGroup>
-          <Label>Descrição</Label>
-          <Textarea
-            value={descricao}
-            onChange={(e) => setDescricao(e.target.value)}
-            required
-          />
+          <Label>Descrição *</Label>
+          <Textarea value={descricao} onChange={(e)=>setDescricao(e.target.value)} required />
         </FormGroup>
 
         <FormGroup>
-          <Label>Imagem (URL)</Label>
-          <Input value={imagem} onChange={(e) => setImagem(e.target.value)} />
+          <Label>Imagem (URL) *</Label>
+          <Input type="url" value={imagem} onChange={(e)=>setImagem(e.target.value)} required />
+        </FormGroup>
+
+        <FormGroup>
+          <Label>Características</Label>
+          <CaracteristicasWrapper>
+            {listaCarac.map((c) => {
+              const relId = c.fields.locacao_caracteristicas?.[0];
+              if (!relId) return null;                   // segurança
+              return (
+                <CaracteristicaOption
+                  key={relId}
+                  selected={selecionadas.includes(relId)}
+                  htmlFor={`car-${relId}`}
+                >
+                  <HiddenCheckbox
+                    id={`car-${relId}`}
+                    type="checkbox"
+                    checked={selecionadas.includes(relId)}
+                    onChange={() => toggleCaracteristica(relId)}
+                  />
+                  {c.fields.nome}
+                </CaracteristicaOption>
+              );
+            })}
+          </CaracteristicasWrapper>
         </FormGroup>
 
         <ButtonGroup>
           <Button type="submit" bg="#28a745" hover="#218838">
-            <Save size={18} /> Salvar
+            <Save size={18}/> Salvar
           </Button>
-          <Button type="button" bg="#6c757d" hover="#5a6268" onClick={() => navigate('/')}>
-            <ArrowLeft size={18} /> Voltar
+          <Button type="button" bg="#6c757d" hover="#5a6268" onClick={()=>navigate('/')}>
+            <ArrowLeft size={18}/> Voltar
           </Button>
         </ButtonGroup>
       </form>
 
-      <ToastContainer position="top-right" autoClose={2000} />
+      <ToastContainer position="top-right" autoClose={2000}/>
     </Container>
   );
 }
