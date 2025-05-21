@@ -77,7 +77,9 @@ src/
 │   ├── Edicao.jsx
 │   ├── EditarCaracteristica.jsx
 │   ├── Home.jsx
+│   ├── Navbar.jsx
 │   ├── NovaCaracteristica.jsx
+│   ├── Preview.jsx
 │
 ├── services/
 │   └── api.js
