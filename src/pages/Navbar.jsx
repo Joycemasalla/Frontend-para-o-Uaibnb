@@ -13,11 +13,9 @@ const Nav = styled.nav`
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 1000; /* <- garante que fique acima do conteúdo */
+  z-index: 1000;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 64px; /* <- espaço para o conteúdo abaixo do navbar */
 `;
-
 
 const Logo = styled.div`
   color: #fff;
@@ -69,12 +67,22 @@ export default function Navbar() {
 
   return (
     <Nav>
-      <NavLink to="/" ><Logo> Hospedagens</Logo></NavLink>
+      <NavLink to="/preview"><Logo>UaiBnb</Logo></NavLink>
       <MenuIcon onClick={() => setMenuOpen(!menuOpen)}>
         {menuOpen ? <FiX /> : <FiMenu />}
       </MenuIcon>
       <NavLinks open={menuOpen}>
-        <NavLink to="/" active={location.pathname === '/'} onClick={() => setMenuOpen(false)}>Início</NavLink>
+        <NavLink
+          to="/preview"
+          onClick={() => {
+            setMenuOpen(false);
+            
+          }}
+        >
+          Ver como visitante
+        </NavLink>
+
+        <NavLink to="/" active={location.pathname === '/'} onClick={() => setMenuOpen(false)}>Hospedagens</NavLink>
         <NavLink to="/nova" active={location.pathname === '/nova'} onClick={() => setMenuOpen(false)}>Nova Hospedagem</NavLink>
         <NavLink to="/caracteristicas" active={location.pathname === '/caracteristicas'} onClick={() => setMenuOpen(false)}>Características</NavLink>
         <NavLink to="/caracteristicas/nova" active={location.pathname === '/caracteristicas/nova'} onClick={() => setMenuOpen(false)}>Nova Característica</NavLink>

@@ -7,6 +7,7 @@ import EditarHospedagem from './pages/Edicao.jsx';
 import Caracteristicas from './pages/Caracteristicas.jsx';
 import NovaCaracteristica from './pages/NovaCaracteristica.jsx';
 import EditarCaracteristica from './pages/EditarCaracteristica.jsx';
+import Preview from './pages/Preview.jsx';
 function App() {
   return (
     <Routes>
@@ -16,6 +17,8 @@ function App() {
       <Route path="/caracteristicas" element={<Caracteristicas />} />
       <Route path="/caracteristicas/nova" element={<NovaCaracteristica />} />
       <Route path="/caracteristicas/editar/:id" element={<EditarCaracteristica />} />
+      <Route path="/preview" element={<Preview />} />
+
     </Routes>
   );
 }
