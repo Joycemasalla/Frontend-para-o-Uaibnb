@@ -102,7 +102,7 @@ Trabalho desenvolvido para fins educacionais, como parte da disciplina de **Fron
 ## 🤝 Agradecimentos
 
 * Ao professor \Fabricio Lugão pela orientação.
-* Ao grupo: Gustavo Monteiro, Júlia Ávila, Maria Eduarda, Sânio Trindade.
+* Ao grupo: Gustavo Monteiro, joyce Masalla, Júlia Ávila, Maria Eduarda, Sânio Trindade.
 
 ---
 
